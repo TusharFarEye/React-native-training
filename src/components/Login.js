@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
- import React, {useState} from 'react';
+ import React, {useEffect, useState} from 'react';
  import {
    StatusBar,
    StyleSheet,
@@ -14,20 +14,66 @@
    Text,
    View,
    TouchableOpacity,
+   Touchable,
+   TouchableWithoutFeedback,
  } from 'react-native';
  
- const Login= (props) => {
+import { postUserLogin } from '../api/Login';
+import { styles } from '../css/styles';
+import { Keyboard } from 'react-native';
+
+ const Login= ({navigation}) => {
  
     const [email ,setEmail] = useState("");
     const [password, setPassword] = useState("");
- 
+    const [loginMessage, setLoginMessage] = useState("");
+
+    const checkAuthorizedUserAndNavigate = async() => {
+      console.log("checking if authorized user");
+      const userData = {
+        username:email,
+        password:password,
+      };
+
+      let response = await postUserLogin(userData);
+
+      console.log("*************************",response);
+
+      if(response.status == 200){
+        console.log("Logged In");
+        navigation.navigate('TodoPage');
+      }else{
+        console.log("Invalid Credentials");
+        setLoginMessage("Invalid Credentials");
+      }
+    };
+
    return (
-    <View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <View style={[styles.LoginContainer, {
+      flexDirection: "column"
+      }]}>
+
+    <StatusBar style = "auto"/>
+    <View style = {{ flex: 1, alignItems :'center', justifyContent : 'center'}} >
+      <Text style = {styles.sectionTitle}>TODO APP</Text>
+      </View>
+      <View style = {{ 
+          flex: 2, 
+          backgroundColor: "white" , 
+          alignItems :'center', 
+          borderTopLeftRadius : 25, 
+          borderTopRightRadius : 25,
+          justifyContent : 'space-evenly'
+          }} >
+
            <TextInput
                style={styles.TextInput}
                placeholder="Email."
                placeholderTextColor="#003f5c"
-               onChangeText={setEmail} />
+               onChangeText={setEmail} 
+               keyboardType='email-address'
+               />
            
            <TextInput
                style={styles.TextInput}
@@ -36,58 +82,28 @@
                secureTextEntry={true}
                onChangeText={setPassword} />
            
- 
-           <TouchableOpacity style={styles.signUpRedirect} 
-            onPress = {()=>props.setIsLogin(!props.isLogin)}
-           >
-             <Text>New User? Sign Up</Text>
+           <View style = {{justifyContent:'center', paddingTop:5, flexDirection:'row'}}>
+              <Text>New User? </Text>
+              
+              <TouchableOpacity onPress = {() => navigation.navigate("SignUp")}>
+                <Text  style = {{ fontWeight:'bold', color:'purple'}}>Sign Up</Text>
+              </TouchableOpacity>
+              
+            </View>
+
+           {loginMessage.length>0?<Text style = {styles.redAlert}>{loginMessage}</Text>:<></>}
+
+           <TouchableOpacity style={styles.loginButton} onPress = {
+            ()=>checkAuthorizedUserAndNavigate()
+            }>  
+             <Text style = {{color:'white'}}>LOGIN</Text>
            </TouchableOpacity>
-     
-           <TouchableOpacity style={styles.loginButton}>
-             <Text>LOGIN</Text>
-           </TouchableOpacity>
+
          </View>
-       
+      </View> 
+       </TouchableWithoutFeedback>
    );
  };
- 
- const styles = StyleSheet.create({
-   container: {
-     flex: 1,
-     backgroundColor: "grey",
-   },
-   TextInput: {
-    borderRadius : 10,
-     backgroundColor: "#FFC0CB",
-     minWidth : 240,
-     width: "60%",
-     height: 45,
-     marginBottom: 20,
-     alignItems: "center",
-     marginTop:20,
-   },
-   sectionTitle: {
-     fontSize: 24,
-     fontWeight: '600',
-     justifyContent:'center',
-     marginTop:100,
-     color:'#000000'
-   },
-   signUpRedirect: {
-     height: 30,
-     marginBottom: 30,
-   },
-   loginButton: {
-     width: "80%",
-     borderRadius: 25,
-     minWidth : 250,
-     height: 50,
-     alignItems: "center",
-     justifyContent: "center",
-     marginTop: 40,
-     backgroundColor: "purple",
-   },
- });
    
  export default Login;
  

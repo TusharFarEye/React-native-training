@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
- import React, {useState} from 'react';
+ import React, {useState, useEffect} from 'react';
  import {
    StatusBar,
    StyleSheet,
@@ -14,16 +14,69 @@
    Text,
    View,
    TouchableOpacity,
+   TouchableWithoutFeedback,
  } from 'react-native';
  
- const SignUp= (props) => {
+import { styles } from '../css/styles';
+import { Keyboard } from 'react-native';
+
+ const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+
+ function validateEmail(email){
+    return (regEmail.test(email)?"":"Invalid Email");
+ };
+
+ function validatePassword(password){
+    if(password.length == 0){
+        return("Password is required");
+    }        
+    else if(password.length < 6){
+        return("Password should be minimum 6 characters");
+    }      
+    else if(password.indexOf(' ') >= 0){        
+      return("Password cannot contain spaces");                          
+    }    
+    else{
+      return("");
+    }        
+ };
+
+ const SignUp = ({navigation},props) => {
     
     const [name,setName] = useState("");
     const [email ,setEmail] = useState("");
     const [password, setPassword] = useState("");
- 
+
+    const [emailError, setEmailError] = useState("")
+    const [passwordError, setPasswordError] = useState("")
+
+    useEffect(() => {
+      setEmailError(validateEmail(email));
+    }, [email]);
+
+    useEffect(() => {
+      setPasswordError(validatePassword(password));
+    }, [password]);
+
    return (
-       <View >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <View style={[styles.LoginContainer, {
+      flexDirection: "column"
+      }]}>
+
+    <StatusBar style = "auto"/>
+    <View style = {{ flex: 1, backgroundColor: "grey" , alignItems :'center' ,justifyContent : 'center'}} >
+      <Text style = {styles.sectionTitle}>TODO APP</Text>
+      </View>
+
+      <View style = {{ 
+          flex: 2, 
+          backgroundColor: "white" , 
+          alignItems :'center', 
+          borderTopLeftRadius : 25, 
+          borderTopRightRadius : 25,
+          justifyContent : 'space-evenly'
+          }} >
  
            <TextInput
                  style={styles.TextInput}
@@ -35,8 +88,12 @@
                style={styles.TextInput}
                placeholder="Email."
                placeholderTextColor="#003f5c"
-               onChangeText={setEmail} />
-           
+               onChangeText={setEmail}
+               keyboardType='email-address'
+                />
+
+            {emailError.length>0?<Text style = {styles.redAlert}>{emailError}</Text>:<></>}           
+
            <TextInput
                style={styles.TextInput}
                placeholder="Password."
@@ -44,46 +101,30 @@
                secureTextEntry={true}
                onChangeText={setPassword} />
            
- 
-           <TouchableOpacity style={styles.signUpRedirect} 
-            onPress = {()=>props.setIsLogin(!props.isLogin)}
-           >
-             <Text>Already Registered ? Log In</Text>
-           </TouchableOpacity>
-     
+           
+           {passwordError.length>0?<Text style = {styles.redAlert}>{passwordError}</Text>:<></>}
+
+           <View style = {{justifyContent:'center', paddingTop:5, flexDirection:'row'}}>
+              <Text>Already Registered? </Text>
+              
+              <TouchableOpacity onPress = {() => navigation.navigate("Login")}>
+                <Text  style = {{ fontWeight:'bold', color:'purple'}}>Login</Text>
+              </TouchableOpacity>
+            
+              
+            </View>
+           
+
            <TouchableOpacity style={styles.loginButton}>
-             <Text>SIGN UP</Text>
+             <Text style = {{color:'white'}}>SIGN UP</Text>
            </TouchableOpacity>
-         </View>
+
+           
+           </View>
+      </View> 
+      </TouchableWithoutFeedback>
    );
  };
  
- const styles = StyleSheet.create({
-   TextInput: {
-    borderRadius : 10,
-     backgroundColor: "#FFC0CB",
-     width: "60%",
-     minWidth : 240,
-     height: 45,
-     marginBottom: 20,
-     alignItems: "center",
-     marginTop:20,
-   },
-   signUpRedirect: {
-     height: 30,
-     marginBottom: 30,
-   },
-   loginButton: {
-     width: "80%",
-     minWidth : 250,
-     borderRadius: 25,
-     height: 50,
-     alignItems: "center",
-     justifyContent: "center",
-     marginTop: 40,
-     backgroundColor: "purple",
-   },
- });
-   
  export default SignUp;
  
