@@ -34,7 +34,7 @@ export default function TodoPage({navigation}) {
       }
     }
     fetchData();
-   }, [useIsFocused])
+   }, [useIsFocused()])
    
 
   return (

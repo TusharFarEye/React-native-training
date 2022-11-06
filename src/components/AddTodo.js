@@ -11,7 +11,6 @@ import {
   } from 'react-native';
  
 import { styles } from '../css/styles';
-import {Dropdown} from 'react-native-material-dropdown';
 
 storeData = async(obj) => { 
     try {
@@ -36,6 +35,7 @@ export default function AddTodo({navigation}) {
     const [todoStatus, setTodoStatus] = useState("");
     
     addToStorage = async() => {
+        console.log("adding to storage");
         obj = {
             'title':title,
             'date':date,
@@ -43,6 +43,7 @@ export default function AddTodo({navigation}) {
         }
         try {
             await storeData(obj)
+            console.log("Todo Info Stored")
             navigation.navigate('TodoPage');
         }catch(error){
             console.log(error);
@@ -66,23 +67,14 @@ export default function AddTodo({navigation}) {
         onChangeText = {setDate}>
         </TextInput>
 
-        {/* <Dropdown  
-        label = 'Status'
-        data = {[
-            {
-                value:'ToDo',
-            },
-            {
-                value:'Doing',
-            },
-            {
-                value:'Done'
-            },
-        ]}
+        <TextInput 
+        style={styles.TextInput}
+        placeholder="Status"
+        placeholderTextColor="#003f5c"
         onChangeText = {setTodoStatus}>
-        </Dropdown> */}
+        </TextInput>
 
-        <TouchableOpacity onPress= {addToStorage}>
+        <TouchableOpacity onPress= {() => addToStorage()}>
             <Text>Submit</Text>
         </TouchableOpacity>
 
