@@ -71,17 +71,19 @@ export const styles = StyleSheet.create({
         alignContent:"center",
         borderRadius:15,
     },
-    AllTodos:{
-        justifyContent:'space-evenly',
-        marginTop: 20,
-        marginRight:10,
-        alignContent:'center',
-        padding:10
-    },
     AddUserButton:{
         flexDirection: "row",
         alignContent: "flex-end",
         marginBottom:20,
         marginTop:10,
     },
+    datePickerStyle: {
+      width: 200,
+      marginTop: 20,
+    },
+    AddTodo:{
+      justifyContent:"center",
+      alignItems:"center",
+      backgroundColor:"grey",
+    }
    });

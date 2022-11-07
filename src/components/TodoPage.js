@@ -11,13 +11,23 @@ import {
     ScrollView,
     Image
 } from 'react-native';
+
 import TodoInfo from './TodoInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../css/styles';
+import { getUserDetails } from '../api/User';
+
+const getUserFirstName = async() => {
+  let response = await getUserDetails();
+  // console.log("^&&^^&&^&", (await response.json())[0].firstName);
+  // return await response.json();
+  return (await response.json())[0].firstName;
+}
 
 export default function TodoPage({navigation}) {
 
-   const [TodoList ,setTodoList] = useState([])
+   const [TodoList ,setTodoList] = useState([]);
+   const [userName, setUserName] = useState("");
     const [isSelected, setIsSelected] = useState("ToDo");
 
    useEffect( () => {
@@ -36,7 +46,19 @@ export default function TodoPage({navigation}) {
     fetchData();
    }, [useIsFocused()])
    
-
+   useEffect( () => {
+    async function fetchData(){
+    try {
+        const userName = await getUserFirstName();
+        console.log("%%%%%%%",await userName);
+        setUserName(userName);
+      } catch (error) {
+          console.log(error);
+      }
+    }
+    fetchData();
+   }, [])
+   
   return (
 
     <View style={[styles.TodoContainer, {
@@ -45,7 +67,7 @@ export default function TodoPage({navigation}) {
 
     <StatusBar style = "auto"/>
         <View style = {{ flex: 1, alignItems :'center' ,justifyContent : 'center'}} >
-        <Text style = {styles.sectionTitle}>To Do List</Text>
+        <Text style = {styles.sectionTitle}>Hello {userName}</Text>
         </View>
         <View style = {{ 
             flex: 4, 
@@ -63,11 +85,9 @@ export default function TodoPage({navigation}) {
             </View>
 
             <ScrollView style= {{alignContent:'center', width:"80%", padding:10}}>
-                {/* <View style = {styles.AllTodos}> */}
                 {TodoList.map((field) => 
                     <TodoInfo TodoData = {field}></TodoInfo>
                 )}
-                {/* </View> */}
             </ScrollView>
 
 
