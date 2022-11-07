@@ -15,11 +15,11 @@ export default function TodoInfo(props) {
   return (
     <View elevation={5} style = {styles.TodoField}>
       <View style={{flex:1, justifyContent:"center"}}>
-          <Image source= {props.TodoData.TodoType?require('/home/tushar/Desktop/todoApp/src/static/doraemon.png'):require('/home/tushar/Desktop/todoApp/src/static/business.png')}></Image>
+          <Image source= {props.TodoData.todoType?require('/home/tushar/Desktop/todoApp/src/static/doraemon.png'):require('/home/tushar/Desktop/todoApp/src/static/business.png')}></Image>
       </View>
       <View style = {{flex:4, justifyContent:"center", padding:10}}>
         <Text>
-             {props.TodoData.title} 
+             {props.TodoData.title} | {props.TodoData.todoType}
         </Text>
       </View>
     </View>

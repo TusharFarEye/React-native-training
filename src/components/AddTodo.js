@@ -12,7 +12,6 @@ import {
   } from 'react-native';
  
 import { styles } from '../css/styles';
-import {Dropdown} from 'react-native-material-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 storeData = async(obj) => { 
